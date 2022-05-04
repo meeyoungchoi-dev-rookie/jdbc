@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * 트랜잭션 - 커넥션 파라미터 전달 방식 동기화
+ * 트랜잭션 - 커넥션 파라미터 전달 방식 동기화 (커넥션이 같은 것이 사용되는지 테스트)
  * */
 @Slf4j
 class MemberServiceV2Test {
@@ -88,4 +88,8 @@ class MemberServiceV2Test {
         assertThat(findMemberA.getMoney()).isEqualTo(10000);// 트랜잭션을 롤백 했기 떄문에 memberA의 금액도 트랜잭션 시작전으로 롤백 되어야 한다
         assertThat(findMemberB.getMoney()).isEqualTo(10000);
     }
+
+
+
+
 }

@@ -1,6 +1,7 @@
 package hello.jdbc.service;
 
 import hello.jdbc.domain.Member;
+import hello.jdbc.repository.MemberRepositoryV1;
 import hello.jdbc.repository.MemberRepositoryV2;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +12,7 @@ import java.sql.SQLException;
 
 /**
  * 트랜잭션 - 파라미터 연동, 풀을 고려한 종료
- * */
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class MemberServiceV2 {
@@ -36,24 +37,15 @@ public class MemberServiceV2 {
         }
     }
 
+
     private void bizLogic(Connection con, String fromId, String toId, int money) throws SQLException {
         Member fromMember = memberRepository.findById(con, fromId);
+
         Member toMember = memberRepository.findById(con, toId);
 
-        memberRepository.update(fromId, fromMember.getMoney() - money);
+        memberRepository.update(con, fromId, fromMember.getMoney() - money);
         validation(toMember);
-        memberRepository.update(toId, toMember.getMoney() + money);
-    }
-
-    private void release(Connection con) {
-        if (con != null) {
-            try {
-                con.setAutoCommit(true); // 커넥션 풀에서 오토커밋이 true인 상태를 유지시키기 위함 왜? autoCommit의 default 값이 true이기 때문이다
-                con.close();
-            } catch (Exception e) {
-                log.info("error", e);
-            }
-        }
+        memberRepository.update(con, toId, toMember.getMoney() + money);
     }
 
     private void validation(Member toMember) {
@@ -62,4 +54,14 @@ public class MemberServiceV2 {
         }
     }
 
+    private void release(Connection con) {
+        if (con != null) {
+            try {
+                con.setAutoCommit(true); //커넥션 풀 고려
+                con.close();
+            } catch (Exception e) {
+                log.info("error", e);
+            }
+        }
+    }
 }

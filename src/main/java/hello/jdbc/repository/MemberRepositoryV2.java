@@ -9,7 +9,7 @@ import java.sql.*;
 import java.util.NoSuchElementException;
 
 /**
- * JDBC - ConnectionParam
+ * JDBC - Connection을 파라미터로 전달하는 예제
  */
 @Slf4j
 public class MemberRepositoryV2 {
